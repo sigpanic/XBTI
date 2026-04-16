@@ -81,21 +81,6 @@ const strokeDashoffset = computed(() => {
   return circumference - (percentage / 100) * circumference;
 });
 
-const personalityEmojis: Record<string, string> = {
-  'dead_frontend': '👻',
-  'code_traitor': '💀',
-  'skill_distiller': '🧪',
-  'vibe_master': '✨',
-  'ai_cleanup': '🧹',
-  'agent_commander': '🎖️',
-  'quantum_bug_hunter': '🔍',
-  'swiss_army_knife': '🔧',
-  'high_value_supervisor': '👑',
-  'colleague_skill': '📦',
-  'anti_distillation': '🛡️',
-  'ancient_programmer': '🏺'
-};
-
 const getPersonalityName = (personalityId: string) => {
   const theme = testStore.currentTheme;
   if (!theme) return '未知人格';

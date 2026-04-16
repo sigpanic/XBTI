@@ -779,5 +779,22 @@ export const programmerTest: TestConfig = {
         ethics: 2.0
       }
     }
-  ]
+  ],
+  dimensionWeights: {
+    ai_dependency: 1.2,
+    agent_orchestration: 1.1,
+    skill_distillation: 1.0,
+    vibe_coding: 0.9,
+    ai_supervision: 1.1,
+    frontend_resilience: 1.2,
+    cross_domain: 1.0,
+    bug_hunting: 0.9,
+    ai_cleanup: 0.8,
+    colleague_skill: 1.3,
+    llm_research: 1.2,
+    innovation: 1.1,
+    adaptability: 1.0,
+    ethics: 0.9
+  },
+  maxScorePerDimension: 15
 };

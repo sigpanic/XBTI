@@ -67,4 +67,6 @@ export interface TestConfig {
   questions: Question[];
   dimensions: Dimension[];
   personalityTypes: PersonalityType[];
+  dimensionWeights?: Record<string, number>;
+  maxScorePerDimension?: number;
 }

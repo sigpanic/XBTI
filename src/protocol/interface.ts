@@ -7,6 +7,10 @@ export class TestProtocol implements TestInterface, ExtensionInterface {
   private personalityTypes: PersonalityType[] = [];
   private tests: TestConfig[] = [];
 
+  getRegisteredTests(): TestConfig[] {
+    return [...this.tests];
+  }
+
   startTest(testId: string): void {
     const test = this.tests.find(t => t.id === testId);
     if (!test) {
@@ -101,10 +105,10 @@ export class TestProtocol implements TestInterface, ExtensionInterface {
     });
 
     // 归一化分数到1-3区间
+    const maxScore = this.currentTest.maxScorePerDimension || 15;
     Object.keys(dimensionScores).forEach(dimensionId => {
       const score = dimensionScores[dimensionId];
-      // 假设每个维度最多有5个问题，每个问题最高3分，所以最高分为15
-      const normalizedScore = (score / 15) * 2 + 1;
+      const normalizedScore = (score / maxScore) * 2 + 1;
       dimensionScores[dimensionId] = Math.max(1, Math.min(3, normalizedScore));
     });
 
@@ -116,11 +120,13 @@ export class TestProtocol implements TestInterface, ExtensionInterface {
       throw new Error('No test started');
     }
 
+    const dimensionWeights = this.currentTest.dimensionWeights || {};
+
     let bestMatch: PersonalityType | null = null;
     let highestSimilarity = -1;
 
     this.currentTest.personalityTypes.forEach(personalityType => {
-      const similarity = this.calculateSimilarity(dimensions, personalityType.template);
+      const similarity = this.calculateSimilarity(dimensions, personalityType.template, dimensionWeights);
       if (similarity > highestSimilarity) {
         highestSimilarity = similarity;
         bestMatch = personalityType;
@@ -137,30 +143,17 @@ export class TestProtocol implements TestInterface, ExtensionInterface {
     };
   }
 
-  private calculateSimilarity(userDimensions: Record<string, number>, templateDimensions: Record<string, number>): number {
+  private calculateSimilarity(userDimensions: Record<string, number>, templateDimensions: Record<string, number>, dimensionWeights: Record<string, number>): number {
     const commonDimensions = Object.keys(userDimensions).filter(key => templateDimensions[key] !== undefined);
     
     if (commonDimensions.length === 0) {
       return 0;
     }
     
-    // 维度权重
-    const dimensionWeights: Record<string, number> = {
-      ai_dependency: 1.2,
-      agent_orchestration: 1.1,
-      skill_distillation: 1.0,
-      vibe_coding: 0.9,
-      ai_supervision: 1.1,
-      frontend_resilience: 1.2,
-      cross_domain: 1.0,
-      bug_hunting: 0.9,
-      ai_cleanup: 0.8,
-      colleague_skill: 1.3,
-      llm_research: 1.2,
-      innovation: 1.1,
-      adaptability: 1.0,
-      ethics: 0.9
-    };
+    const weightValues = Object.values(dimensionWeights);
+    const maxWeight = weightValues.length > 0 
+      ? Math.max(...weightValues) 
+      : 1.0;
     
     // 计算加权余弦相似度
     let weightedDotProduct = 0;
@@ -197,7 +190,7 @@ export class TestProtocol implements TestInterface, ExtensionInterface {
     euclideanDistance = Math.sqrt(euclideanDistance);
     
     // 归一化欧几里得距离到0-1范围
-    const maxPossibleDistance = Math.sqrt(commonDimensions.length * 4 * 1.3); // 最大差值为2，平方为4，最大权重1.3
+    const maxPossibleDistance = Math.sqrt(commonDimensions.length * 4 * maxWeight);
     const normalizedEuclidean = 1 - Math.min(1, euclideanDistance / maxPossibleDistance);
     
     // 组合两种相似度度量

@@ -12,10 +12,7 @@
     "test:validate:single": "node --experimental-strip-types scripts/validate.js"
   },
   "dependencies": {
-    "@tensorflow/tfjs": "^4.22.0",
     "echarts": "^6.0.0",
-    "element-plus": "^2.13.7",
-    "ml5": "^1.0.1",
     "pinia": "^3.0.4",
     "vue": "^3.5.32",
     "vue-router": "^5.0.4"
@@ -23,7 +20,6 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.5",
     "gh-pages": "^6.3.0",
-    "patch-package": "^8.0.1",
     "vite": "^8.0.4"
   }
 }

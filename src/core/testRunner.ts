@@ -1,5 +1,5 @@
 import { TestProtocol } from '../protocol/interface.ts';
-import type { TestConfig, PersonalityType } from '../protocol/types.ts';
+import type { TestConfig, PersonalityType, TestResult } from '../protocol/types.ts';
 
 export interface DistributionResult {
   typeId: string;
@@ -42,12 +42,12 @@ export class GenericTestRunner {
    */
   private generateAllAnswerCombinations(questions: TestConfig['questions']): Record<string, string>[] {
     const questionIds = questions.map(q => q.id);
-    const optionIds = questions.map(q => q.options.map(opt => opt.id));
+    const allOptions = questions.map(q => q.options.map(opt => opt.id));
     
     let combinations: string[][] = [[]];
     
-    for (let i = 0; i < questionIds.length; i++) {
-      const currentOptions = optionIds[i];
+    for (let i = 0; i < allOptions.length; i++) {
+      const currentOptions = allOptions[i];
       const newCombinations: string[][] = [];
       
       for (const combination of combinations) {
@@ -83,9 +83,10 @@ export class GenericTestRunner {
   /**
    * 使用 TestProtocol 运行测试并获取结果
    */
-  runTest(answers: Record<string, string>) {
+  runTest(answers: Record<string, string>): TestResult {
+    const config = this.protocol.getRegisteredTests()[0];
     this.protocol.resetTest();
-    this.protocol.startTest((this.protocol as any).tests[0].id);
+    this.protocol.startTest(config.id);
     
     Object.entries(answers).forEach(([qId, optId]) => {
       this.protocol.submitAnswer(qId, optId);
@@ -100,16 +101,18 @@ export class GenericTestRunner {
    */
   async runLargeScaleTest(maxCombinations: number = 5_000_000): Promise<ValidationReport> {
     const config = (this.protocol as any).tests[0];
-    const allCombinations = this.generateAllAnswerCombinations(config.questions);
-    const totalCombinations = allCombinations.length;
+    const totalCombinations = config.questions.reduce((acc: number, q: any) => acc * q.options.length, 1);
     
-    // 智能剪枝：如果组合数超过限制，采用抽样策略
-    let combinationsToTest = allCombinations;
+    // 智能剪枝：如果组合数超过限制，采用随机抽样策略
+    let combinationsToTest: Record<string, string>[] = [];
     let isSampled = false;
     
     if (totalCombinations > maxCombinations) {
       isSampled = true;
-      combinationsToTest = this.sampleCombinations(allCombinations, maxCombinations);
+      // 直接随机生成，不先生成全部组合
+      combinationsToTest = this.randomGenerateAnswers(config, maxCombinations);
+    } else {
+      combinationsToTest = this.generateAllAnswerCombinations(config.questions);
     }
     
     const resultDistribution: Record<string, number> = {};
@@ -176,20 +179,32 @@ export class GenericTestRunner {
    * 小规模随机测试
    */
   runSmallScaleTest(sampleCount: number = 20): any[] {
-    const config = (this.protocol as any).tests[0];
-    const results: any[] = [];
+    const config = this.protocol.getRegisteredTests()[0];
+    const results: Array<{ index: number; personality_type: string; personality_name: string; match_percentage: number }> = [];
     
     for (let i = 0; i < sampleCount; i++) {
       const answers = this.generateRandomAnswers(config.questions);
       const result = this.runTest(answers);
+      const personalityType = config.personalityTypes.find(p => p.id === result.personality_type);
       results.push({
         index: i + 1,
         personality_type: result.personality_type,
-        personality_name: result.interpretation.name,
+        personality_name: personalityType ? personalityType.name : result.personality_type,
         match_percentage: result.match_percentage
       });
     }
     
+    return results;
+  }
+
+  /**
+   * 随机生成指定数量的答案组合（不预生成全部）
+   */
+  private randomGenerateAnswers(config: any, count: number): Record<string, string>[] {
+    const results: Record<string, string>[] = [];
+    for (let i = 0; i < count; i++) {
+      results.push(this.generateRandomAnswers(config.questions));
+    }
     return results;
   }
 

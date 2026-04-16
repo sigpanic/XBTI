@@ -1,12 +1,7 @@
 import { defineStore } from 'pinia';
 import { TestEngine } from '../core/testEngine';
 import { themeManager } from '../xbti/themeManager';
-import { programmerTest } from '../instance/programmerTest';
-import { kinggloryTest } from '../instance/kinggloryTest';
 import type { TestResult, TestConfig } from '../protocol/types';
-
-themeManager.registerTheme(programmerTest);
-themeManager.registerTheme(kinggloryTest);
 
 export const useTestStore = defineStore('test', {
   state: () => ({
@@ -16,36 +11,38 @@ export const useTestStore = defineStore('test', {
     result: null as TestResult | null,
     isTestStarted: false,
     isTestCompleted: false,
-    currentThemeId: 'programmer' as string
+    currentThemeId: '' as string
   }),
 
   getters: {
     currentTheme: (state): TestConfig | null => {
+      if (!state.currentThemeId) return null;
       return themeManager.getTheme(state.currentThemeId) || null;
     },
 
     currentQuestion: (state) => {
-      if (!state.isTestStarted) return null;
+      if (!state.isTestStarted || !state.currentThemeId) return null;
       const theme = themeManager.getTheme(state.currentThemeId);
       if (!theme) return null;
       return theme.questions[state.currentQuestionIndex];
     },
 
     progress: (state) => {
-      if (!state.isTestStarted) return 0;
+      if (!state.isTestStarted || !state.currentThemeId) return 0;
       const theme = themeManager.getTheme(state.currentThemeId);
       if (!theme) return 0;
       return ((state.currentQuestionIndex) / theme.questions.length) * 100;
     },
 
     isLastQuestion: (state) => {
-      if (!state.isTestStarted) return false;
+      if (!state.isTestStarted || !state.currentThemeId) return false;
       const theme = themeManager.getTheme(state.currentThemeId);
       if (!theme) return false;
       return state.currentQuestionIndex === theme.questions.length - 1;
     },
 
     totalQuestions: (state) => {
+      if (!state.currentThemeId) return 0;
       const theme = themeManager.getTheme(state.currentThemeId);
       return theme?.questions.length || 0;
     },
@@ -68,6 +65,7 @@ export const useTestStore = defineStore('test', {
     },
 
     startTest() {
+      if (!this.currentThemeId) return;
       const theme = themeManager.getTheme(this.currentThemeId);
       if (!theme) return;
 
@@ -89,17 +87,13 @@ export const useTestStore = defineStore('test', {
       this.answers[currentQuestion.id] = optionId;
       this.testEngine.submitAnswer(currentQuestion.id, optionId);
 
-      // 先移动到下一题
       this.currentQuestionIndex++;
 
-      // 检查是否还有下一题
       const theme = themeManager.getTheme(this.currentThemeId);
       if (!theme || this.currentQuestionIndex >= theme.questions.length) {
-        // 没有下一题了，返回 true 表示应该完成测试
         return true;
       }
       
-      // 还有下一题，返回 false
       return false;
     },
 
