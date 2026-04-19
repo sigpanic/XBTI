@@ -6,7 +6,7 @@
 > 
 > 蒸馏人格，理解自我
 
-[![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-Live-brightgreen)](https://sigpanic.github.io/XBTI/)
+[![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-Live-brightgreen)](https://sigpanic.github.io/PMD/)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 ---
@@ -25,14 +25,14 @@ PMD（Personality Model Distillation）是一个**通用的人格测评生成系
 
 ### 在线体验
 
-访问 [https://sigpanic.github.io/XBTI/](https://sigpanic.github.io/XBTI/) 立即测试
+访问 [https://sigpanic.github.io/PMD/](https://sigpanic.github.io/PMD/) 立即测试
 
 ### 用 AI Agent 生成你的主题
 
 ```bash
 # 1. Clone 仓库
-git clone git@github.com:sigpanic/XBTI.git
-cd XBTI
+git clone git@github.com:sigpanic/PMD.git
+cd PMD
 
 # 2. 安装依赖
 npm install
@@ -55,8 +55,8 @@ npm install
 ### 🎭 任意主题
 从程序员到铲屎官，从社恐到社牛，只要你能定义，就能蒸馏
 
-### 🧪 科学验证
-基于向量空间模型和相似度匹配算法，确保结果准确可靠
+### 🧪 加权多维匹配
+基于维度相似度(55%) + 证据评分(45%) + 约束校验的多层次算法，确保结果准确
 
 ### 🤖 AI 友好
 提供完整的提示词、协议定义和验收标准，AI 能自动生成完整测评
@@ -108,13 +108,13 @@ npm install
 ### 成功案例
 
 **程序员人格测试：**
-- 人格类型：12 种
+- 人格类型：13 种
 - 总组合数：1,594,323
 - 平均分布：8.33%
 - 标准差：5.77
 - 最大占比：16.53%（码奸）
 - 稀有类型：3 个（均有专属验收案例）
-- 验收案例：12/12 命中
+- 验收案例：13/13 命中
 - ✅ 所有验收标准通过
 
 ---
@@ -124,10 +124,10 @@ npm install
 ### 1. 程序员人格测试
 评估 AI 时代程序员的定位和竞争力
 
-**12 种人格类型**：
+**13 种人格类型**：
 - 全栈瑞士军刀 - AI 是我的技能外挂
 - Vibe Coding 大师 - 我不写代码，我 vibe
-- 已死的前端兄弟 - 我不需要 AI，我只要 jQuery
+- 已死的前端兄弟 - AI？AI 懂个屁的前端
 - AI 擦屁股工程师 - AI 生成代码，我来擦屁股
 - 码奸 - 我是码奸，我骄傲
 - 技能蒸馏师 - 知识就是力量，蒸馏就是魔法
@@ -148,7 +148,7 @@ npm install
 ## 📄 项目结构
 
 ```
-XBTI/
+PMD/
 ├── src/
 │   ├── protocol/        # 协议层和引擎
 │   ├── core/            # 通用测评核心
@@ -173,7 +173,6 @@ XBTI/
 - Pinia（状态管理）
 - Vue Router（路由）
 - ECharts（数据可视化）
-- Element Plus（UI 组件）
 
 ---
 
@@ -186,8 +185,8 @@ MIT License
 ## 📬 联系方式
 
 - **GitHub**: [@sigpanic](https://github.com/sigpanic)
-- **项目地址**: [https://github.com/sigpanic/XBTI](https://github.com/sigpanic/XBTI)
-- **在线演示**: [https://sigpanic.github.io/XBTI/](https://sigpanic.github.io/XBTI/)
+- **项目地址**: [https://github.com/sigpanic/PMD](https://github.com/sigpanic/PMD)
+- **在线演示**: [https://sigpanic.github.io/PMD/](https://sigpanic.github.io/PMD/)
 
 ---
 
