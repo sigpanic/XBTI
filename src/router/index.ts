@@ -22,7 +22,7 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory('/XBTI/'),
+  history: createWebHistory('/PMD/'),
   routes
 });
 

@@ -97,6 +97,21 @@ export const useTestStore = defineStore('test', {
       return false;
     },
 
+    goToPreviousQuestion() {
+      if (!this.isTestStarted || this.currentQuestionIndex <= 0) return;
+
+      // Remove the answer for current question when going back
+      const theme = themeManager.getTheme(this.currentThemeId);
+      if (theme && this.currentQuestionIndex < theme.questions.length) {
+        const currentQ = theme.questions[this.currentQuestionIndex];
+        if (currentQ && this.answers[currentQ.id]) {
+          delete this.answers[currentQ.id];
+        }
+      }
+
+      this.currentQuestionIndex--;
+    },
+
     completeTest() {
       if (!this.isTestStarted) return;
 
