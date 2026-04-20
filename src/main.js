@@ -6,9 +6,11 @@ import router from './router'
 import { themeManager } from './xbti/themeManager'
 import { programmerTest } from './instance/programmerTest'
 import { kinggloryTest } from './instance/kinggloryTest'
+import { algorithmCompetitionTest } from './instance/algorithmCompetitionTest'
 
 themeManager.registerTheme(programmerTest)
 themeManager.registerTheme(kinggloryTest)
+themeManager.registerTheme(algorithmCompetitionTest)
 
 const app = createApp(App)
 
