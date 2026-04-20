@@ -61,13 +61,24 @@ async function main() {
       console.log('\n🎲 小规模随机测试 (20 条路径)');
       console.log('-'.repeat(50));
       
+      // 打印完整题目
+      console.log('\n=== 完整题目 ===');
+      testConfig.questions.forEach(q => {
+        console.log(`\n${q.id}: ${q.text}`);
+        q.options.forEach(opt => {
+          console.log(`  ${opt.id}: ${opt.text}`);
+        });
+      });
+      
+      console.log('\n');
+      
       const results = runner.runSmallScaleTest(20);
       results.forEach(r => {
         console.log(`\n测试 ${r.index}: ${r.personality_name} (${r.match_percentage}%)`);
         console.log('  路径:');
         testConfig.questions.forEach(q => {
           const selectedOption = q.options.find(opt => opt.id === r.answers[q.id]);
-          console.log(`    ${q.id}: ${selectedOption ? selectedOption.id : r.answers[q.id]}`);
+          console.log(`    ${q.id}: [${selectedOption ? selectedOption.id : r.answers[q.id]}] ${selectedOption ? selectedOption.text : ''}`);
         });
       });
       
