@@ -92,6 +92,8 @@ export interface TestConfig {
   dimensionWeights?: Record<string, number>;
   maxScorePerDimension?: number;
   acceptanceCases?: AcceptanceCase[];
+  icon?: string;
+  imageUrl?: string;
 }
 
 export interface AcceptanceCase {

@@ -30,7 +30,14 @@
             <div class="card-glassmorphism">
               <div class="card-content">
                 <div class="icon-container">
-                  <span class="theme-icon">{{ theme.icon }}</span>
+                  <img 
+                    v-if="theme.imageUrl" 
+                    :src="theme.imageUrl" 
+                    :alt="theme.name"
+                    class="theme-image"
+                  />
+                  <span v-else-if="theme.icon" class="theme-icon">{{ theme.icon }}</span>
+                  <span v-else class="theme-icon">🚧</span>
                   <div class="icon-pulse"></div>
                 </div>
                 
@@ -158,13 +165,17 @@ const allThemes = computed(() => testStore.allThemes);
 const displayThemes = computed(() => {
   const themes = allThemes.value.map(t => ({
     ...t,
-    icon: t.id === 'programmer' ? '💻' : t.id === 'kingglory' ? '🎮' : '🚧'
+    icon: t.icon || (t.id === 'programmer' ? '💻' : t.id === 'kingglory' ? '🎮' : undefined)
   }));
   
-  return [
-    ...themes,
-    { id: 'soon', name: '更多主题', description: '正在开发中...', icon: '🚧' }
-  ];
+  if (themes.length < 3) {
+    return [
+      ...themes,
+      { id: 'soon', name: '更多主题', description: '正在开发中...', icon: '🚧', imageUrl: undefined }
+    ];
+  }
+  
+  return themes;
 });
 
 const featuresData = [
@@ -476,6 +487,14 @@ const startTestWithTheme = (theme: any, event?: Event) => {
 .theme-icon {
   font-size: 5rem;
   display: block;
+  animation: gentle-float 3.5s ease-in-out infinite;
+  filter: drop-shadow(0 8px 24px rgba(14, 165, 233, 0.25));
+}
+
+.theme-image {
+  width: 5rem;
+  height: 5rem;
+  object-fit: contain;
   animation: gentle-float 3.5s ease-in-out infinite;
   filter: drop-shadow(0 8px 24px rgba(14, 165, 233, 0.25));
 }
