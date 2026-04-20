@@ -9,6 +9,8 @@
 [![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-Live-brightgreen)](https://sigpanic.github.io/PMD/)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
+![PMD Screenshot](./src/assets/pmd.png)
+
 ---
 
 ## 🎯 什么是 PMD
