@@ -211,9 +211,21 @@ export class GenericTestRunner {
   /**
    * 小规模随机测试
    */
-  runSmallScaleTest(sampleCount: number = 20): any[] {
+  runSmallScaleTest(sampleCount: number = 20): Array<{
+    index: number;
+    personality_type: string;
+    personality_name: string;
+    match_percentage: number;
+    answers: Record<string, string>;
+  }> {
     const config = this.protocol.getRegisteredTests()[0];
-    const results: Array<{ index: number; personality_type: string; personality_name: string; match_percentage: number }> = [];
+    const results: Array<{
+      index: number;
+      personality_type: string;
+      personality_name: string;
+      match_percentage: number;
+      answers: Record<string, string>;
+    }> = [];
     
     for (let i = 0; i < sampleCount; i++) {
       const answers = this.generateRandomAnswers(config.questions);
@@ -223,7 +235,8 @@ export class GenericTestRunner {
         index: i + 1,
         personality_type: result.personality_type,
         personality_name: personalityType ? personalityType.name : result.personality_type,
-        match_percentage: result.match_percentage
+        match_percentage: result.match_percentage,
+        answers
       });
     }
     

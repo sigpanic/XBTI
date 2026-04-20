@@ -63,7 +63,12 @@ async function main() {
       
       const results = runner.runSmallScaleTest(20);
       results.forEach(r => {
-        console.log(`测试 ${r.index}: ${r.personality_name} (${r.match_percentage}%)`);
+        console.log(`\n测试 ${r.index}: ${r.personality_name} (${r.match_percentage}%)`);
+        console.log('  路径:');
+        testConfig.questions.forEach(q => {
+          const selectedOption = q.options.find(opt => opt.id === r.answers[q.id]);
+          console.log(`    ${q.id}: ${selectedOption ? selectedOption.id : r.answers[q.id]}`);
+        });
       });
       
       const distribution = {};
@@ -71,13 +76,15 @@ async function main() {
         distribution[r.personality_name] = (distribution[r.personality_name] || 0) + 1;
       });
       
-      console.log('\n📊 分布统计:');
+      console.log('\n\n📊 分布统计:');
       Object.entries(distribution)
         .sort((a, b) => b[1] - a[1])
         .forEach(([name, count]) => {
           const percentage = ((count / results.length) * 100).toFixed(1);
           console.log(`  ${name}: ${count}/20 (${percentage}%)`);
         });
+
+      console.log('\n请根据模拟的选项检查得到的结果是否合理');
       
     } else {
       // 大规模枚举测试
